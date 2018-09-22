@@ -1,5 +1,8 @@
 # docker-openssl
 
+Run OpenSSL commands in docker container, expecially usefull to me under windows.
+There is also support for openssh clients, so to use *openssh-keygen* needed to generate public/private keys to passwordless authenticate using ssh.
+
 ## Self signed certificate example
 
 Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe:
