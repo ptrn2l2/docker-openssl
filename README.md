@@ -5,16 +5,16 @@ There is also support for openssh clients, so to use *openssh-keygen* needed to 
 
 ## Verify folder sharing
 
-Sometimes using Docker in linux mode under windows file sharing silently fails, so I always verify that is working, even tough the drives are shared in Docker for desktop's options.
+Sometimes using Docker in linux mode under windows, even tough the drives are shared in Docker for desktop's options, file sharing silently fails, so I always verify that is working.
 
 Open a powershell, issue a *"dir"* commad and verify that exists at least one file in current folder, so that we can verify file sharing.
-Then issuea the following command:
+Then issue the following command:
 
 ~~~~powershell
 docker run --name tmp_ls --rm -it --entrypoint="/bin/ls" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8
 ~~~~
 
-Verify that the same files are listed comparing the output of docker's *"ls"* and powershell's *"dir"*.
+Verify that the same files are listed comparing the output of preceiding docker's *"ls"* and powershell's *"dir"* commands.
 
 If it fails issue the following command in an **Administrator's Powershell** console (refs: [stackoverflow](<https://stackoverflow.com/a/43904051>), [blog.olandese.nl](<https://blog.olandese.nl/2017/05/03/solve-docker-for-windows-error-a-firewall-is-blocking-file-sharing-between-windows-and-the-containers/>)):
 
@@ -22,11 +22,13 @@ If it fails issue the following command in an **Administrator's Powershell** con
 Set-NetConnectionProfile -interfacealias "vEthernet (DockerNAT)" -NetworkCategory Private
 ~~~~
 
-and retry. If it fails see ["stevelasker" blog](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/). If it fails try to solve the problem and restart.
+and retry. If it fails see ["stevelasker" blog](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/). If it fails try to solve the problem and retry.
 
 ## Self signed certificate example
 
-Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe:
+> Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe
+
+Generate a self signed cert that lasts for ~10 yers
 
 ~~~~powershell
 docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl:alpine-3.8 req -x509 -days 3650 -newkey rsa:2048 -subj "/C=IT/ST=CE/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
@@ -43,7 +45,7 @@ where
 
 ## Diffie-Hellman Parameters Generation Example
 
-Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe:
+> Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe:
 
 ~~~~powershell
 docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl:alpine-3.8 dhparam -out /wrk/dhparam.pem 2048
