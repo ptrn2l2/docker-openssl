@@ -69,7 +69,7 @@ Copy public key to a remote server using ssh client libraries, change *user* wit
 docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8 "user@example.com -p 22 -f /wrk/ssh_keys/id_rsa.pub"
 ~~~~
 
-> ### NOTE: public key can be manually copied withiut using *ssh-copy-id*
+> ### NOTE: public key can be manually copied without using *ssh-copy-id*
 > This is a nice example of copying without open-ssh client commands (found in [askubuntu](<https://askubuntu.com/a/6186>) by "Huygens"):
 >
 >> *# cat "/wrk/ssh_keys/id_rsa.pub | ssh user@example.com 'umask 0077; mkdir -p .ssh; cat >> .ssh/authorized_keys && echo "Key copied"'*
