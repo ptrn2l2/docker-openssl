@@ -11,7 +11,7 @@ Open a powershell, issue a *"dir"* commad and verify that exists at least one fi
 Then issue the following command:
 
 ~~~~powershell
-docker run --name tmp_ls --rm -it --entrypoint="/bin/ls" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8
+docker run --name tmp_ls --rm -it --entrypoint="/bin/ls" -v ${PWD}:/wrk ptrn2l2/openssl /wrk
 ~~~~
 
 Verify that the same files are listed comparing the output of preceiding docker's *"ls"* and powershell's *"dir"* commands.
@@ -28,10 +28,10 @@ and retry. If it fails see ["stevelasker" blog](https://blogs.msdn.microsoft.com
 
 > Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe
 
-Generate a self signed cert that lasts for ~10 yers
+Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: for wildcard you'll need configuration files)
 
 ~~~~powershell
-docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl:alpine-3.8 req -x509 -days 3650 -newkey rsa:2048 -subj "/C=IT/ST=CE/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
+docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl req -x509 -days 365 -newkey rsa:2048 -subj "/C=IT/ST=CE/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
 ~~~~
 
 where
@@ -48,7 +48,7 @@ where
 > Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe:
 
 ~~~~powershell
-docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl:alpine-3.8 dhparam -out /wrk/dhparam.pem 2048
+docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl dhparam -out /wrk/dhparam.pem 2048
 ~~~~
 
 ## ssh private/public pair
@@ -56,9 +56,9 @@ docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl:alpine-3.8
 Generate *ssh* keys useful for passwordless authentication in *&lt;current folder&gt;/ssh_keys*:
 
 ~~~~powershell
-docker run --name gen_ssh_fold --rm -it --entrypoint="mkdir" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8 -p /wrk/ssh_keys
-docker run --name gen_ssh_pkey --rm -it --entrypoint="ssh-keygen" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8 -t rsa -b 4096 -f /wrk/ssh_keys/id_rsa
-docker run --name tmp_ls_wrk --rm -it --entrypoint="/bin/ls" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8 /wrk/ssh_keys
+docker run --name gen_ssh_fold --rm -it --entrypoint="mkdir" -v ${pwd}:/wrk ptrn2l2/openssl -p /wrk/ssh_keys
+docker run --name gen_ssh_pkey --rm -it --entrypoint="ssh-keygen" -v ${pwd}:/wrk ptrn2l2/openssl -t rsa -b 4096 -f /wrk/ssh_keys/id_rsa
+docker run --name tmp_ls_wrk --rm -it --entrypoint="/bin/ls" -v ${pwd}:/wrk ptrn2l2/openssl /wrk/ssh_keys
 ~~~~
 
 Password can be ignored (just typing a return) for passwordless login.
@@ -66,7 +66,7 @@ Password can be ignored (just typing a return) for passwordless login.
 Copy public key to a remote server using ssh client libraries, change *user* with real user name and *example&#46;com* with real domain
 
 ~~~~powershell
-docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8 "user@example.com -p 22 -f /wrk/ssh_keys/id_rsa.pub"
+docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "user@example.com -p 22 -f /wrk/ssh_keys/id_rsa.pub"
 ~~~~
 
 > ### NOTE: public key can be manually copied without using *ssh-copy-id*
@@ -80,7 +80,7 @@ Here I show the "easy" way
 First open an interactive shell:
 
 ~~~~powershell
-docker run --name tmp_sh --rm -it --entrypoint="/bin/sh" -v ${pwd}:/wrk ptrn2l2/openssl:alpine-3.8
+docker run --name tmp_sh --rm -it --entrypoint="/bin/sh" -v ${pwd}:/wrk ptrn2l2/openssl
 ~~~~
 
 The inside the docker container execute:
