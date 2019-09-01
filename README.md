@@ -66,7 +66,7 @@ Password can be ignored (just typing a return) for passwordless login.
 Copy public key to a remote server using ssh client libraries, change *user* with real user name and *example&#46;com* with real domain
 
 ~~~~powershell
-docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "user@example.com -p 22 -f /wrk/ssh_keys/id_rsa.pub"
+docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "-p 22 -f /wrk/ssh_keys/id_rsa.pub user@example.com"
 ~~~~
 
 > ### NOTE: public key can be manually copied without using *ssh-copy-id*
