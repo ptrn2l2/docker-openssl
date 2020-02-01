@@ -28,7 +28,7 @@ and retry. If it fails see ["stevelasker" blog](https://blogs.msdn.microsoft.com
 
 > Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe
 
-Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: for wildcard you'll need configuration files)
+Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: for wildcard sites you'll need configuration files)
 
 ~~~~powershell
 docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl req -new -x509 -days 365 -newkey rsa:4096 -subj "/C=IT/ST=CE/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
@@ -53,7 +53,7 @@ docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl dhparam -o
 
 ## ssh private/public pair
 
-Generate *ssh* keys useful for passwordless authentication in *&lt;current folder&gt;/ssh_keys*:
+Generate *ssh* keys in *&lt;current folder&gt;/ssh_keys*,  useful for passwordless ssh authentication:
 
 ~~~~powershell
 docker run --name gen_ssh_fold --rm -it --entrypoint="mkdir" -v ${pwd}:/wrk ptrn2l2/openssl -p /wrk/ssh_keys
@@ -66,7 +66,7 @@ Password can be ignored (just typing a return) for passwordless login.
 Copy public key to a remote server using ssh client libraries, change *user* with real user name and *example&#46;com* with real domain
 
 ~~~~powershell
-docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "-p 22 -f /wrk/ssh_keys/id_rsa.pub user@example.com"
+docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "-p 22 -f -i /wrk/ssh_keys/id_rsa.pub user@example.com"
 ~~~~
 
 > ### NOTE: public key can be manually copied without using *ssh-copy-id*
