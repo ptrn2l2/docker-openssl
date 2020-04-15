@@ -22,7 +22,7 @@ If it fails issue the following command in an **Administrator's Powershell** con
 Set-NetConnectionProfile -interfacealias "vEthernet (DockerNAT)" -NetworkCategory Private
 ~~~~
 
-and retry. If it fails see ["stevelasker" blog](https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/). If it fails try to solve the problem and retry.
+and retry. If it fails see ["Configuring Docker for Windows Shared Drives / Volume Mounting with AD"](https://docs.microsoft.com/it-it/archive/blogs/stevelasker/configuring-docker-for-windows-volumes). If it fails try to solve the problem and retry.
 
 ## Self signed certificate example
 
