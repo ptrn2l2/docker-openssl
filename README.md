@@ -83,12 +83,16 @@ First open an interactive shell:
 docker run --name tmp_sh --rm -it --entrypoint="/bin/sh" -v ${pwd}:/wrk ptrn2l2/openssl
 ~~~~
 
-The inside the docker container execute:
+The inside the docker container execute (I copy the pub too just to show file permissions - all files should be 644 (pub keys, authorized_keys, known_hosts, configuration), but private keys should be 600):
 
 ~~~~sh
-cp /wrk/ssh_keys/id_rsa /root/.
+mkdir -p /root/.ssh
+chmod 700 /root/.ssh
+cp /wrk/ssh_keys/id_rsa /root/.ssh/.
+cp /wrk/ssh_keys/id_rsa.pub /root/.ssh/.
 ls /root
 chmod 600 /root/id_rsa
+chmod 644 /root/id_rsa.pub
 ls /root
 ssh-keygen -f /root/id_rsa -p
 ls /wrk/ssh_keys
