@@ -8,7 +8,7 @@ There is also support for openssh clients, so to use *openssh-keygen* needed to 
 Sometimes using Docker in linux mode under windows, even tough the drives are shared in Docker for desktop's options, file sharing silently fails, so I always verify that is working.
 
 Open a powershell, issue a *"dir"* commad and verify that exists at least one file in current folder, so that we can verify file sharing.
-Then issue the following command:
+Then issue the following command in PowerShell:
 
 ~~~~powershell
 docker run --name tmp_ls --rm -it --entrypoint="/bin/ls" -v ${PWD}:/wrk ptrn2l2/openssl /wrk
@@ -28,7 +28,7 @@ and retry. If it fails see ["Configuring Docker for Windows Shared Drives / Volu
 
 > Use ${PWD} in PowerShell, $(pwd) in bash, %cd% in cmd.exe
 
-Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: for wildcard sites you'll need configuration files)
+Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: to use wildcard in /CN you'll need configuration files)
 
 ~~~~powershell
 docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl req -new -x509 -days 365 -newkey rsa:4096 -subj "/C=IT/ST=IT/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
@@ -53,7 +53,7 @@ docker run --name gen-dhparam --rm -it -v ${PWD}:/wrk ptrn2l2/openssl dhparam -o
 
 ## ssh private/public pair
 
-Generate *ssh* keys in *&lt;current folder&gt;/ssh_keys*,  useful for passwordless ssh authentication:
+Generate *ssh* keys in *&lt;current folder&gt;/ssh_keys*,  useful for passwordless ssh authentication (to change key name use -f /wrk/ssh_keys/<NAME>, I would alway prefix it with "id_rsa_"):
 
 ~~~~powershell
 docker run --name gen_ssh_fold --rm -it --entrypoint="mkdir" -v ${pwd}:/wrk ptrn2l2/openssl -p /wrk/ssh_keys
@@ -61,9 +61,9 @@ docker run --name gen_ssh_pkey --rm -it --entrypoint="ssh-keygen" -v ${pwd}:/wrk
 docker run --name tmp_ls_wrk --rm -it --entrypoint="/bin/ls" -v ${pwd}:/wrk ptrn2l2/openssl /wrk/ssh_keys
 ~~~~
 
-Password can be ignored (just typing a return) for passwordless login.
+Password can be ignored (just typing a return) for passwordless login, and can later be added or removed, as showed later here.
 
-Copy public key to a remote server using ssh client libraries, change *user* with real user name and *example&#46;com* with real domain
+Copy public key to a remote server using ssh client libraries, change *user* with server user name and *example&#46;com* with server URI
 
 ~~~~powershell
 docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk ptrn2l2/openssl "-p 22 -f -i /wrk/ssh_keys/id_rsa.pub user@example.com"
@@ -74,7 +74,7 @@ docker run --name gen_ssh_cp --rm -it --entrypoint="ssh-copy-id" -v ${pwd}:/wrk 
 >
 >> *# cat "/wrk/ssh_keys/id_rsa.pub | ssh user@example.com 'umask 0077; mkdir -p .ssh; cat >> .ssh/authorized_keys && echo "Key copied"'*
 
-Password can be changed (or added if it was not setted), but it cannot be easly done using one docker command, at least in windows, because of permission problems on generated files.
+Password can be changed (or added), but it cannot be easly done using one docker command, at least in windows, because of permission problems on generated files.
 Here I show the "easy" way
 
 First open an interactive shell:
@@ -83,20 +83,20 @@ First open an interactive shell:
 docker run --name tmp_sh --rm -it --entrypoint="/bin/sh" -v ${pwd}:/wrk ptrn2l2/openssl
 ~~~~
 
-The inside the docker container execute (I copy the pub too just to show file permissions - all files should be 644 (pub keys, authorized_keys, known_hosts, configuration), but private keys should be 600):
+Then inside the docker container execute (I copy the pub key too just to show file permissions - all files should be 644 (pub keys, authorized_keys, known_hosts, configuration), but private keys should be 600):
 
 ~~~~sh
 mkdir -p /root/.ssh
 chmod 700 /root/.ssh
 cp /wrk/ssh_keys/id_rsa /root/.ssh/.
-cp /wrk/ssh_keys/id_rsa.pub /root/.ssh/.
-ls /root
+# cp /wrk/ssh_keys/id_rsa.pub /root/.ssh/.
+ls /root/.ssh
 chmod 600 /root/id_rsa
-chmod 644 /root/id_rsa.pub
+# chmod 644 /root/id_rsa.pub
 ls /root
 ssh-keygen -f /root/id_rsa -p
 ls /wrk/ssh_keys
-cp -f /root/id_rsa /wrk/ssh_keys/.
+cp -f /root/.ssh/id_rsa /wrk/ssh_keys/.
 ls /wrk/ssh_keys
 logout
 ~~~~
