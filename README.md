@@ -31,17 +31,26 @@ and retry. If it fails see ["Configuring Docker for Windows Shared Drives / Volu
 Generate a self signed cert for "example.com" domain that lasts for ~1 year (NOTE: to use wildcard in /CN you'll need configuration files)
 
 ~~~~powershell
-docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl req -new -x509 -days 365 -newkey rsa:4096 -subj "/C=IT/ST=IT/L=CE/O=IT/OU=ITDept/CN=example.com" -nodes -keyout /wrk/selfsigned.key -out /wrk/selfsigned.crt
+docker run --name gen-ssl-key-cert-pair --rm -it -v ${PWD}:/wrk ptrn2l2/openssl \
+    req -new -x509 -days 365 -newkey rsa:4096 -nodes -keyout /wrk/selfsigned.key \
+    -out /wrk/selfsigned. crt \
+    -subj "/C=IT/ST=Campania/L=Caserta/O=Localhost Co/OU=I.T.Dept/emailAddress=email@example.com/CN=www.localhost" \
+    -addext "subjectAltName=DNS:*.localhost,DNS:localhost"
 ~~~~
 
 where
 
-* /C=XX // Country Code
-* /ST=State // State Name
-* /L=City // Location (City name)
-* /O=Information Technology // Organization Name
-* /OU=ITDept // Organizational Unit
-* /CN=example.com // Common Name - used for SNI (Server Name Indication)
+* /C is Country Code
+* /ST is State Name
+* /L is Location (City name)
+* /O is Organization Name
+* /OU is Organizational Unit
+* /CN is Common Name - used for SNI (Server Name Indication)
+
+In real scenarios, if your domain is "example.com", use
+
+* CN=www.example.com
+* "subjectAltName=DNS:*.example.com,DNS:example.com"
 
 ## Diffie-Hellman Parameters Generation Example
 
